@@ -12,4 +12,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 RUN pip3 install \
         torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu \
         typing \
-        numpy
+        numpy \
+        matplotlib \
+        # Dependencies for Jupyter
+        ipykernel \
+        ipywidgets
