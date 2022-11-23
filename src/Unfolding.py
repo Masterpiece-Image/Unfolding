@@ -14,11 +14,12 @@ import ProximalOperator
 class Unfolding(torch.nn.Module):
 
 
-    def __init__(self, in_channels: int, num_features: int = 48) -> None:
+    def __init__(self, in_channels: int, num_features: int = 48, iterations: int = 10) -> None:
 
 
         self.in_channels: int = in_channels
         self.num_features: int = num_features
+        self.iterations: int = iterations
 
         # Convolutional layers
         self.O_0: torch.nn.Conv2d = torch.nn.Conv2d(in_channels, out_channels=num_features, kernel_size=3)
@@ -38,9 +39,9 @@ class Unfolding(torch.nn.Module):
         self.outputs_stage: list[torch.Tensor] = []
 
 
-    def forward(self, J: torch.Tensor, iterations: int = 10) -> torch.Tensor:
+    def forward(self, J: torch.Tensor) -> torch.Tensor:
 
-        nb_stage: int = iterations
+        nb_stage: int = self.iterations
 
         # Initialisation
         O_0_out: torch.Tensor = self.O_0(J)
