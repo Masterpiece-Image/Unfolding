@@ -9,11 +9,11 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
         python3 \
         python3-pip
 
-RUN pip3 install \
-        torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu \
-        typing \
-        numpy \
-        matplotlib \
-        # Dependencies for Jupyter
-        ipykernel \
-        ipywidgets
+# RUN pip3 install \
+#         torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu \
+#         typing \
+#         numpy \
+#         matplotlib \
+#         # Dependencies for Jupyter
+#         ipykernel \
+#         ipywidgets
