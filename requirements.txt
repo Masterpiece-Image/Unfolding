@@ -1,0 +1,18 @@
+# Pytorch : https://pytorch.org/
+## Pytorch Build : Stable
+## Your OS : Linux
+## Package : Pip
+## Language : Python
+## Compute Platform : CPU
+## Run this Command : pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+torch 
+torchvision 
+torchaudio 
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# Typing : https://docs.python.org/3/library/typing.html
+typing
+
+# Dependencies for Jupyter
+# ipykernel
+# ipywidgets
