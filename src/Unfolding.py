@@ -14,7 +14,7 @@ import ProximalOperator
 class Unfolding(torch.nn.Module):
 
 
-    def __init__(self, image: torch.Tensor, in_channels: int, num_features: int = 48) -> None:
+    def __init__(self, in_channels: int, num_features: int = 48) -> None:
 
 
         self.in_channels: int = in_channels
@@ -27,8 +27,8 @@ class Unfolding(torch.nn.Module):
         self.X_4: torch.nn.Conv2d = torch.nn.Conv2d(in_channels, out_channels=num_features, kernel_size=3, dilation=(4, 4), padding='same', bias=False)
 
         # Proximal operators
-        self.prox_M: ProximalOperator.Prox_M = ProximalOperator.Prox_M(in_channels=in_channels, num_features=in_channels // 2)
-        self.prox_O: ProximalOperator.Prox_O = ProximalOperator.Prox_O(in_channels=in_channels)
+        self.prox_M: ProximalOperator.Prox_M = ProximalOperator.Prox_M(in_channels=in_channels)
+        self.prox_O: ProximalOperator.Prox_O = ProximalOperator.Prox_O(in_channels=in_channels, num_features=num_features)
 
         # Step tensors
         self.stepO: torch.DoubleTensor = torch.DoubleTensor(0.1, requires_grad=True)
@@ -48,6 +48,8 @@ class Unfolding(torch.nn.Module):
         O_previous, Z : typing.Tuple[torch.Tensor, torch.Tensor] = self.prox_O(tmp)
         H: torch.Tensor = J - O_previous
 
+        # self.outputs_stage((torch.tensor(O_current), torch.tensor(H_current))) ???????????????
+
         # Stage 1
         X_1_out: torch.Tensor = self.X_1(H)
         X_2_out: torch.Tensor = self.X_2(H)           
@@ -66,6 +68,8 @@ class Unfolding(torch.nn.Module):
         tmp: torch.Tensor = torch.concat([Z, self.stepO * O_current + (1. - self.stepO) * O_previous],-1)
             
         O_current, Z : typing.Tuple[torch.Tensor, torch.Tensor] = self.prox_O(tmp)
+
+        self.outputs_stage((torch.tensor(O_current), torch.tensor(H_current)))
 
         # Stage 2...nb_stage
         for _ in range(2, nb_stage):   # iterations 2 to 10                 

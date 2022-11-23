@@ -54,7 +54,7 @@ class ProximalOperator(torch.nn.Module):
         return conv_out
 
 
-class Prox_O(ProximalOperator):
+class Prox_M(ProximalOperator):
 
     def __init__(self, in_channels: int) -> None:
         """
@@ -64,11 +64,11 @@ class Prox_O(ProximalOperator):
 
     @classmethod
     def from_image(image: torch.Tensor) -> 'Prox_M':
-        return Prox_O(in_channels=image.shape[-1])
+        return Prox_M(in_channels=image.shape[-1])
 
       
 
-class Prox_M(ProximalOperator):
+class Prox_O(ProximalOperator):
 
     def __init__(self, in_channels: int, num_features: int) -> None:
         super().__init__(in_channels=in_channels, num_features=num_features)
@@ -79,9 +79,9 @@ class Prox_M(ProximalOperator):
         Z: torch.Tensor = out[:, :, :, 1: self.in_channels]
         return B, Z
 
-    @classmethod
-    def from_image(image: torch.Tensor) -> 'Prox_M':
-        return Prox_M(in_channels=image.shape[-1], num_features=image.shape[-1]//2)
+    # @classmethod
+    # def from_image(image: torch.Tensor) -> 'Prox_M':
+    #     return Prox_M(in_channels=image.shape[-1], num_features=image.shape[-1]//2)
 
 
 
