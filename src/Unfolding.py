@@ -13,7 +13,12 @@ import ProximalOperator
 
 class Unfolding(torch.nn.Module):
 
-    def __init__(self, in_channels: int, num_features: int = 48) -> None:
+
+    def __init__(self, image: torch.Tensor, in_channels: int, num_features: int = 48) -> None:
+
+
+        self.in_channels: int = in_channels
+        self.num_features: int = num_features
 
         # Convolutional layers
         self.O_0: torch.nn.Conv2d = torch.nn.Conv2d(in_channels, out_channels=num_features, kernel_size=3)
@@ -22,8 +27,8 @@ class Unfolding(torch.nn.Module):
         self.X_4: torch.nn.Conv2d = torch.nn.Conv2d(in_channels, out_channels=num_features, kernel_size=3, dilation=(4, 4), padding='same', bias=False)
 
         # Proximal operators
-        self.prox_M: ProximalOperator.Prox_M = ProximalOperator.Prox_M(in_channels, num_features)
-        self.prox_O: ProximalOperator.Prox_O = ProximalOperator.Prox_O(in_channels)
+        self.prox_M: ProximalOperator.Prox_M = ProximalOperator.Prox_M(in_channels=in_channels, num_features=in_channels // 2)
+        self.prox_O: ProximalOperator.Prox_O = ProximalOperator.Prox_O(in_channels=in_channels)
 
         # Step tensors
         self.stepO: torch.DoubleTensor = torch.DoubleTensor(0.1, requires_grad=True)
@@ -33,28 +38,28 @@ class Unfolding(torch.nn.Module):
         self.outputs_stage: list[torch.Tensor] = []
 
 
-    def forward(self, J: torch.Tensor, num_features: int = 48, iterations: int = 10) -> torch.Tensor:
+    def forward(self, J: torch.Tensor, iterations: int = 10) -> torch.Tensor:
 
         nb_stage: int = iterations
 
         # Initialisation
-        self.O_0: torch.Tensor = self.O_0(J)
-        tmp: torch.Tensor = torch.concat([self.O_0, J], -1)
+        O_0_out: torch.Tensor = self.O_0(J)
+        tmp: torch.Tensor = torch.concat([O_0_out, J], -1)
         O_previous, Z : typing.Tuple[torch.Tensor, torch.Tensor] = self.prox_O(tmp)
         H: torch.Tensor = J - O_previous
 
         # Stage 1
-        self.X_1: torch.Tensor = self.X_1(H)
-        self.X_2: torch.Tensor = self.X_2(H)           
-        self.X_4: torch.Tensor = self.X_4(H)            
+        X_1_out: torch.Tensor = self.X_1(H)
+        X_2_out: torch.Tensor = self.X_2(H)           
+        X_4_out: torch.Tensor = self.X_4(H)            
       
-        M: torch.Tensor = self.prox_M(torch.concat([self.X_1, self.X_2, self.X_4], -1))
+        M: torch.Tensor = self.prox_M(torch.concat([X_1_out, X_2_out, X_4_out], -1))
        
-        self.X_1: torch.Tensor = self.X_1(M[:, :, :, 0:num_features])
-        self.X_2: torch.Tensor = self.X_2(M[:, :, :, num_features:num_features*2])           
-        self.X_4: torch.Tensor = self.X_4(M[:, :, :, num_features*2:num_features*3])
+        X_1_out: torch.Tensor = self.X_1(M[:, :, :, 0:self.num_features])
+        X_2_out: torch.Tensor = self.X_2(M[:, :, :, self.num_features:self.num_features*2])           
+        X_4_out: torch.Tensor = self.X_4(M[:, :, :, self.num_features*2:self.num_features*3])
             
-        h_current: torch.Tensor =  torch.concat([self.X_1, self.X_2, self.X_4], -1)
+        h_current: torch.Tensor =  torch.concat([X_1_out, X_2_out, X_4_out], -1)
         H_current: torch.Tensor = h_current.sum(dim=-1, keepdim=True)
        
         O_current: torch.Tensor = J - H_current     
@@ -68,30 +73,30 @@ class Unfolding(torch.nn.Module):
             O_previous = O_current       
             H = J - O_previous
 
-            self.X_1: torch.Tensor = self.X_1(M[:, :, :, 0:num_features])
-            self.X_2: torch.Tensor = self.X_2(M[:, :, :, num_features:num_features*2])           
-            self.X_4: torch.Tensor = self.X_4(M[:, :, :, num_features*2:num_features*3])
+            X_1_out: torch.Tensor = self.X_1(M[:, :, :, 0:self.num_features])
+            X_2_out: torch.Tensor = self.X_2(M[:, :, :, self.num_features:self.num_features*2])           
+            X_4_out: torch.Tensor = self.X_4(M[:, :, :, self.num_features*2:self.num_features*3])
             
-            H_star: torch.Tensor = torch.concat([self.X_1, self.X_2, self.X_4], -1) 
+            H_star: torch.Tensor = torch.concat([X_1_out, X_2_out, X_4_out], -1) 
             H_star: torch.Tensor = H_star.sum(dim=-1, keepdim=True)
             
-            self.X_1: torch.Tensor = self.X_1(H_star-H)  
-            self.X_2: torch.Tensor = self.X_2(H_star-H)            
-            self.X_4: torch.Tensor = self.X_4(H_star-H)               
+            X_1_out: torch.Tensor = self.X_1(H_star-H)  
+            X_2_out: torch.Tensor = self.X_2(H_star-H)            
+            X_4_out: torch.Tensor = self.X_4(H_star-H)               
 
-            M: torch.Tensor = self.prox_M(M - self.stepM * torch.concat([self.X_1, self.X_2, self.X_4], -1))
+            M: torch.Tensor = self.prox_M(M - self.stepM * torch.concat([X_1_out, X_2_out, X_4_out], -1))
             
-            self.X_1: torch.Tensor = self.X_1(M[:, :, :, 0:num_features])
-            self.X_2: torch.Tensor = self.X_2(M[:, :, :, num_features:num_features*2])           
-            self.X_4: torch.Tensor = self.X_4(M[:, :, :, num_features*2:num_features*3])
+            X_1_out: torch.Tensor = self.X_1(M[:, :, :, 0:self.num_features])    
+            X_2_out: torch.Tensor = self.X_2(M[:, :, :, self.num_features:self.num_features*2])             
+            X_4_out: torch.Tensor = self.X_4(M[:, :, :, self.num_features*2:self.num_features*3])
             
-            h_current: torch.Tensor = torch.concat([self.X_1, self.X_2, self.X_4], -1)
+            h_current: torch.Tensor = torch.concat([X_1_out, X_2_out, X_4_out], -1) 
             H_current: torch.Tensor = h_current.sum(dim=-1, keepdim=True)
             
-            O_current: torch.Tensor = J - H_current
+            O_current: torch.Tensor = J - H_current        
             tmp: torch.Tensor = torch.concat([Z, self.stepO * O_current + (1. - self.stepO) * O_previous], -1)
         
-            O_current, Z: typing.Tuple[torch.Tensor, torch.Tensor] = self.prox_O(tmp, num_features)
+            O_current, Z: typing.Tuple[torch.Tensor, torch.Tensor] = self.prox_O(tmp, self.num_features)
 
             self.outputs_stage((torch.tensor(O_current), torch.tensor(H_current)))
                         
@@ -99,29 +104,28 @@ class Unfolding(torch.nn.Module):
 
         return final_out
 
-
-    # def forward(self, J: torch.Tensor, num_features: int = 48, iterations: int = 10) -> torch.Tensor:
+    # def forward(self, J: torch.Tensor, iterations: int = 10) -> torch.Tensor:
 
     #     nb_stage: int = iterations
 
     #     # Initialisation
-    #     O_0_out: torch.Tensor = self.O_0(J)
-    #     tmp: torch.Tensor = torch.concat([O_0_out, J], -1)
+    #     self.O_0: torch.Tensor = self.O_0(J)
+    #     tmp: torch.Tensor = torch.concat([self.O_0, J], -1)
     #     O_previous, Z : typing.Tuple[torch.Tensor, torch.Tensor] = self.prox_O(tmp)
     #     H: torch.Tensor = J - O_previous
 
     #     # Stage 1
-    #     X_1_out: torch.Tensor = self.X_1(H)
-    #     X_2_out: torch.Tensor = self.X_2(H)           
-    #     X_4_out: torch.Tensor = self.X_4(H)            
+    #     self.X_1: torch.Tensor = self.X_1(H)
+    #     self.X_2: torch.Tensor = self.X_2(H)           
+    #     self.X_4: torch.Tensor = self.X_4(H)            
       
-    #     M: torch.Tensor = self.prox_M(torch.concat([X_1_out, X_2_out, X_4_out], -1))
+    #     M: torch.Tensor = self.prox_M(torch.concat([self.X_1, self.X_2, self.X_4], -1))
        
-    #     X_1_out: torch.Tensor = self.X_1(M[:, :, :, 0:num_features])
-    #     X_2_out: torch.Tensor = self.X_2(M[:, :, :, num_features:num_features*2])           
-    #     X_4_out: torch.Tensor = self.X_4(M[:, :, :, num_features*2:num_features*3])
+    #     self.X_1: torch.Tensor = self.X_1(M[:, :, :, 0:self.num_features])
+    #     self.X_2: torch.Tensor = self.X_2(M[:, :, :, self.num_features:self.num_features*2])           
+    #     self.X_4: torch.Tensor = self.X_4(M[:, :, :, self.num_features*2:self.num_features*3])
             
-    #     h_current: torch.Tensor =  torch.concat([X_1_out, X_2_out, X_4_out], -1)
+    #     h_current: torch.Tensor =  torch.concat([self.X_1, self.X_2, self.X_4], -1)
     #     H_current: torch.Tensor = h_current.sum(dim=-1, keepdim=True)
        
     #     O_current: torch.Tensor = J - H_current     
@@ -135,37 +139,36 @@ class Unfolding(torch.nn.Module):
     #         O_previous = O_current       
     #         H = J - O_previous
 
-    #         X_1_out: torch.Tensor = self.X_1(M[:, :, :, 0:num_features])
-    #         X_2_out: torch.Tensor = self.X_2(M[:, :, :, num_features:num_features*2])           
-    #         X_4_out: torch.Tensor = self.X_4(M[:, :, :, num_features*2:num_features*3])
+    #         self.X_1: torch.Tensor = self.X_1(M[:, :, :, 0:self.num_features])
+    #         self.X_2: torch.Tensor = self.X_2(M[:, :, :, self.num_features:self.num_features*2])           
+    #         self.X_4: torch.Tensor = self.X_4(M[:, :, :, self.num_features*2:self.num_features*3])
             
-    #         H_star: torch.Tensor = torch.concat([X_1_out, X_2_out, X_4_out], -1) 
+    #         H_star: torch.Tensor = torch.concat([self.X_1, self.X_2, self.X_4], -1) 
     #         H_star: torch.Tensor = H_star.sum(dim=-1, keepdim=True)
             
-    #         X_1_out: torch.Tensor = self.X_1(H_star-H)  
-    #         X_2_out: torch.Tensor = self.X_2(H_star-H)            
-    #         X_4_out: torch.Tensor = self.X_4(H_star-H)               
+    #         self.X_1: torch.Tensor = self.X_1(H_star-H)  
+    #         self.X_2: torch.Tensor = self.X_2(H_star-H)            
+    #         self.X_4: torch.Tensor = self.X_4(H_star-H)               
 
-    #         M: torch.Tensor = self.prox_M(M - self.stepM * torch.concat([X_1_out, X_2_out, X_4_out], -1))
+    #         M: torch.Tensor = self.prox_M(M - self.stepM * torch.concat([self.X_1, self.X_2, self.X_4], -1))
             
-    #         X_1_out: torch.Tensor = self.X_1(M[:, :, :, 0:num_features])    
-    #         X_2_out: torch.Tensor = self.X_2(M[:, :, :, num_features:num_features*2])             
-    #         X_4_out: torch.Tensor = self.X_4(M[:, :, :, num_features*2:num_features*3])
+    #         self.X_1: torch.Tensor = self.X_1(M[:, :, :, 0:self.num_features])
+    #         self.X_2: torch.Tensor = self.X_2(M[:, :, :, self.num_features:self.num_features*2])           
+    #         self.X_4: torch.Tensor = self.X_4(M[:, :, :, self.num_features*2:self.num_features*3])
             
-    #         h_current: torch.Tensor = torch.concat([X_1_out, X_2_out, X_4_out], -1) 
+    #         h_current: torch.Tensor = torch.concat([self.X_1, self.X_2, self.X_4], -1)
     #         H_current: torch.Tensor = h_current.sum(dim=-1, keepdim=True)
             
-    #         O_current: torch.Tensor = J - H_current        
+    #         O_current: torch.Tensor = J - H_current
     #         tmp: torch.Tensor = torch.concat([Z, self.stepO * O_current + (1. - self.stepO) * O_previous], -1)
         
-    #         O_current, Z: typing.Tuple[torch.Tensor, torch.Tensor] = self.prox_O(tmp, num_features)
+    #         O_current, Z: typing.Tuple[torch.Tensor, torch.Tensor] = self.prox_O(tmp, self.num_features)
 
     #         self.outputs_stage((torch.tensor(O_current), torch.tensor(H_current)))
                         
     #     final_out: torch.Tensor = O_current
 
     #     return final_out
-
 
 
         
