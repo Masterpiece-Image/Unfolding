@@ -12,7 +12,7 @@ setup(
     author = 'Jessy Khafif',
     author_email= 'khafifjessy.github@gmail.com',
     packages= [
-        {'' : 'src'}
+        'Unfolding'
     ],
     install_requires=requirements
 )
