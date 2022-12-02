@@ -5,10 +5,13 @@
 ## Language : Python
 ## Compute Platform : CPU
 ## Run this Command : pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
-torch 
-torchvision 
-torchaudio 
---extra-index-url https://download.pytorch.org/whl/cpu
+# torch 
+# torchvision 
+# torchaudio 
+# --extra-index-url https://download.pytorch.org/whl/cpu
+torch==1.13.0+cpu
+torchaudio==0.13.0+cpu
+torchvision==0.14.0+cpu
 
 # Typing : https://docs.python.org/3/library/typing.html
 typing
