@@ -10,5 +10,6 @@
     "output_path" : "output",
     "shuffle" : true,
     "learning_rate" : 0.001,
-    "max_epochs" : 1
+    "max_epochs" : 1,
+    "device" : "gpu"
 }
