@@ -4,3 +4,4 @@ test-pytorch
 Unfolding
 artifacts.ipynb
 layer_named.ipynb
+**/__pycache__/

@@ -8,30 +8,20 @@ import ignite.engine
 import ignite.contrib.handlers
 import ignite.metrics
 
+import json
 
 import src.Trainer as Trainer
 import src.Evaluator as Evaluator
 import src.Datas as Datas
 
 
+
+
 if __name__ == '__main__' :
 
-
-    config = {
-        'model' : {
-            'input_channels' : 1,
-            'iterations' : 10,
-            'num_features' : 48
-        },
-        'dataset_path' : './phantom-datas',
-        'train_size' : 0.8,
-        'batch_size' : 2,
-        'output_path' : 'output',
-        'shuffle' : True,
-        'learning_rate' : 0.001,
-        'max_epochs' : 1
-    }
-
+    with open(sys.argv[1]) as file:
+        config = json.load(file)
+        
 
     train_loader, validation_loader = Datas.get_dataloaders(config)
 

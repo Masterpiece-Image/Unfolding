@@ -1,10 +1,12 @@
 ## Environment
 
+### Docker
+
 ### Conda
 
 ### Pip
 
-### On nixos
+### Nix
 
 
 ## Running
