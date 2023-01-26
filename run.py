@@ -1,5 +1,8 @@
 
+import pathlib
 import sys
+
+import matplotlib
 
 sys.path.append('./src')
 
@@ -9,6 +12,10 @@ import ignite.contrib.handlers
 import ignite.metrics
 
 import json
+import pandas
+import matplotlib.pyplot
+import numpy
+
 
 import src.Trainer as Trainer
 import src.Evaluator as Evaluator
@@ -21,12 +28,9 @@ if __name__ == '__main__' :
 
     with open(sys.argv[1]) as file:
         config: dict = json.load(file)
-        
 
-    train_loader, validation_loader = Datas.get_dataloaders(
-        config=config,
-        device=config.get('device', 'cpu')
-    )
+    
+    train_loader, validation_loader = Datas.get_dataloaders(config)
 
     ## TRAINER CONFIGURATION
 
@@ -35,8 +39,8 @@ if __name__ == '__main__' :
     train_step = Trainer.create_train_step(
         model=model, 
         optimizer=optimizer, 
-        criterion = criterion, 
-        lr_scheduler = lr_scheduler
+        criterion=criterion, 
+        lr_scheduler=lr_scheduler
     )
 
     trainer = ignite.engine.Engine(train_step)
@@ -50,6 +54,18 @@ if __name__ == '__main__' :
         # Parameters of callback
         loss_history
     )
+
+    output_path = pathlib.Path(config.get('output_path', '.'))
+
+    trainer.add_event_handler(
+        ignite.engine.Events.COMPLETED,
+        # Callback
+        Trainer.save_model,
+        # Parameters of callback
+        model,
+        output_path
+    )
+    
 
     # Add progress bar showing batch loss value adn some metrics
     pbar = ignite.contrib.handlers.ProgressBar(
@@ -75,7 +91,7 @@ if __name__ == '__main__' :
     #### MAE METRICS
 
     mae = ignite.metrics.MeanAbsoluteError(output_transform)
-    avg_mae = ignite.metrics.RunningAverage(src=mae)
+    avg_mae = ignite.metrics.RunningAverage(src=mae, epoch_bound=False)
 
     mae.attach(engine=evaluator, name='mae')
     avg_mae.attach(engine=evaluator, name='avg_mae')
@@ -83,7 +99,7 @@ if __name__ == '__main__' :
     #### MSE METRICS
 
     mse = ignite.metrics.MeanSquaredError(output_transform)
-    avg_mse = ignite.metrics.RunningAverage(src=mse)
+    avg_mse = ignite.metrics.RunningAverage(src=mse, epoch_bound=False)
 
     mse.attach(engine=evaluator, name='mse')
     avg_mse.attach(engine=evaluator, name='avg_mse')
@@ -145,6 +161,40 @@ if __name__ == '__main__' :
 
     trainer.run(train_loader, max_epochs=config.get('max_epochs', 3))
 
+    df_history_train = pandas.DataFrame(data=training_history)
+    df_history_valid = pandas.DataFrame(data=validation_history)
+
+    # print(df_history_train)
+    # df_history_train.plot()
+    
+    matplotlib.pyplot.clf()
+
+    df_history_train.plot(xlabel='Epoch', ylabel='Metrics')
+    matplotlib.pyplot.title('Train History')
+    matplotlib.pyplot.savefig(output_path / 'train_history')
+
+    matplotlib.pyplot.clf()
+
+    df_history_valid.plot(xlabel='Epoch', ylabel='Metrics')
+    matplotlib.pyplot.title('Validation History')
+    matplotlib.pyplot.savefig(output_path / 'validation_history')
+
+    matplotlib.pyplot.clf()
+
+    matplotlib.pyplot.plot(loss_history)
+    matplotlib.pyplot.xlabel('Epoch')
+    matplotlib.pyplot.ylabel('Loss')
+    matplotlib.pyplot.title('Loss History')
+    # matplotlib.pyplot.legend()
+    matplotlib.pyplot.savefig(output_path / 'loss_history')
+
+    matplotlib.pyplot.clf()
+
+    
+    # matplotlib.pyplot.show()
+
+    
+    
     # print(training_history)
     # print(validation_history)
     

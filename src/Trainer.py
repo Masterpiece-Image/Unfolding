@@ -1,4 +1,5 @@
 
+import pathlib
 import torch
 import torch.nn
 import torch.optim
@@ -88,3 +89,10 @@ def print_logs(engine: ignite.engine.Engine):
             engine.state.output['loss']
         )
     )
+
+def save_model(
+    engine: ignite.engine.Engine, 
+    model: torch.nn.Module, 
+    path: pathlib.Path = pathlib.Path('.')
+) -> None:
+    torch.save(model, path / 'model.pt')

@@ -1,0 +1,15 @@
+{
+    "model" : {
+        "input_channels" : 1,
+        "iterations" : 10,
+        "num_features" : 48
+    },
+    "dataset_path" : "./examples/train1/phantom-datas",
+    "train_size" : 0.8,
+    "batch_size" : 2,
+    "output_path" : "./examples/train1/outputs",
+    "shuffle" : true,
+    "learning_rate" : 1e-6,
+    "max_epochs" : 100, 
+    "device" : "cuda"
+}

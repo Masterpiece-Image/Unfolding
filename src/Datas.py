@@ -8,23 +8,26 @@ import pathlib
 
 class ImageDataset(torch.utils.data.Dataset):
 
-    def __init__(self, root_dir: pathlib.Path, device: str = 'cpu') -> None:
+    def __init__(self, data_path: pathlib.Path,  config: dict = {}) -> None:
         """
         Args:
             root_dir (pathlib.Path): Directory with all the images.
         """
         super(ImageDataset, self).__init__()
-        self.root_dir: pathlib.Path = root_dir
+        self.data_path: pathlib.Path = data_path
         self.image_names: list[pathlib.Path] = [ 
-            filename.stem for filename in map(lambda e : pathlib.Path(e), os.listdir(root_dir / 'Artifacts'))
+            filename.stem for filename in map(lambda e : pathlib.Path(e), os.listdir(self.data_path / 'Artifacts'))
         ]
 
         self.items: list[tuple[torch.Tensor, torch.Tensor]] = [] 
 
+        device = config.get('device', 'cpu')
+        size_pool = config.get('max_pool2d', (2, 2))
+
         for index in range(0, len(self.image_names)):
 
             filename_artifact: pathlib.Path = \
-                self.root_dir / 'Artifacts' / (self.image_names[index] + '.jpg')
+                self.data_path / 'Artifacts' / (self.image_names[index] + '.jpg')
 
             image_artifact_string: torch.Tensor = \
                 torchvision.io.read_file(str(filename_artifact))
@@ -36,17 +39,17 @@ class ImageDataset(torch.utils.data.Dataset):
                 ) / 255.0
 
             filename_result: pathlib.Path = \
-                self.root_dir / 'Results' / (self.image_names[index] + '.png')
+                self.data_path / 'Results' / (self.image_names[index] + '.png')
 
             image_result_string: torch.Tensor = \
                 torchvision.io.read_file(str(filename_result))
+
             image_result_decoded: torch.Tensor = \
                 torchvision.io.decode_png(
                     input=image_result_string, 
                     mode=torchvision.io.ImageReadMode.GRAY
                 ) / 255.0
 
-            size_pool = (4,4)
             image_artifact_decoded = torch.nn.functional.max_pool2d(image_artifact_decoded, size_pool)
             image_result_decoded = torch.nn.functional.max_pool2d(image_result_decoded, size_pool)
 
@@ -72,8 +75,11 @@ def split_dataset(dataset: ImageDataset, train_size: float) -> tuple[ImageDatase
     train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
     return train_dataset, test_dataset
 
-def get_dataloaders(config: dict[str, str|int], device: str = 'cpu') -> tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
-    dataset_full = ImageDataset(pathlib.Path(config['dataset_path']), device=device)
+def get_dataloaders(config: dict[str, str|int]) -> tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
+    dataset_full = ImageDataset(
+        data_path=pathlib.Path(config['dataset_path']),
+        config=config
+    )
     train_dataset, test_dataset = split_dataset(dataset=dataset_full, train_size=config.get('train_size', 0.8))
     train_loader = torch.utils.data.DataLoader(
         train_dataset, 
