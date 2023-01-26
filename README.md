@@ -20,7 +20,7 @@ Installation of dependencies :
 
 #### __With GPU__
 
-Before, you must [know your cuda version installed]("https://arnon.dk/check-cuda-installed/") (use `nvcc --version`)
+Before, you must [know your cuda version installed](https://arnon.dk/check-cuda-installed/) (use `nvcc --version`)
 ```bash
 conda install pytorch torchvision ignite pytorch-cuda="your cuda version" -c pytorch -c nvidia
 ```
