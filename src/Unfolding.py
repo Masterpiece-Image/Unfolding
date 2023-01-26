@@ -165,5 +165,5 @@ class Unfolding(torch.nn.Module):
             O_current, Z = self.prox_O(tmp)
 
         final_out = O_current
-        
+        self.to
         return final_out

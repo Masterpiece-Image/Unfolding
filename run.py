@@ -20,16 +20,25 @@ import src.Datas as Datas
 if __name__ == '__main__' :
 
     with open(sys.argv[1]) as file:
-        config = json.load(file)
+        config: dict = json.load(file)
         
-
-    train_loader, validation_loader = Datas.get_dataloaders(config)
+        
+    train_loader, validation_loader = Datas.get_dataloaders(
+        config=config,
+        device=config.get('device', 'cpu')
+    )
 
     ## TRAINER CONFIGURATION
 
     model, optimizer, criterion, lr_scheduler = Trainer.initialize(config)
 
-    train_step = Trainer.create_train_step(model, optimizer, criterion, lr_scheduler)
+    train_step = Trainer.create_train_step(
+        model=model, 
+        optimizer=optimizer, 
+        criterion = criterion, 
+        lr_scheduler = lr_scheduler
+    )
+
     trainer = ignite.engine.Engine(train_step)
 
     loss_history = []
@@ -128,8 +137,8 @@ if __name__ == '__main__' :
     )
 
     pbar.attach(
-        engine=evaluator,
-        metric_names=['mae', 'avg_mae', 'mse', 'avg_mse']
+        engine=evaluator
+        # metric_names=['mae', 'avg_mae', 'mse', 'avg_mse']
     )
 
     trainer.run(train_loader, max_epochs=config.get('max_epochs', 3))

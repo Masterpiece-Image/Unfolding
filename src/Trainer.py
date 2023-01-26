@@ -19,6 +19,8 @@ def initialize(config: dict[str, str|int|dict]):
         num_features=config_model.get('num_features', 48),
         iterations=config_model.get('iterations', 10)
     )
+
+    model.to(device = config.get('device', 'cpu'))
    
     optimizer = torch.optim.Adam(
         params=model.parameters(),

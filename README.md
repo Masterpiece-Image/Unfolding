@@ -106,7 +106,7 @@ For example, the file `example.json` can contain:
     "shuffle" : true,
     "learning_rate" : 0.001,
     "max_epochs" : 1,
-    "device" : "gpu"
+    "device" : "cuda" // or cpu
 }
 ```
 
