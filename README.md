@@ -1,16 +1,86 @@
-## Environment
+# Unfolding
 
-### Docker
+## __Clonning__
+```bash
+git clone https://github.com/Masterpiece-Image/Unfolding.git
+```
 
-### Conda
+## __Environments__
 
-### Pip
+### __Docker__
 
-### Nix
+### __Conda__
 
-## Running
 
-### Configuration file (json)
+Installation of dependencies :
+
+#### __With GPU__
+
+Before, you must [https://arnon.dk/check-cuda-installed/](know your cuda version installed) (use `nvcc --version`)
+```bash
+conda install pytorch torchvision ignite pytorch-cuda="your cuda version" -c pytorch -c nvidia
+```
+
+#### __With CPU__
+
+```bash
+conda install pytorch torchvision cpuonly -c pytorch
+```
+
+#### __From yaml files__
+
+### __Pip__
+
+```bash
+pip3 install torch torchvision ignite
+```
+
+#### __From requirements file__
+
+```bash
+pip3 install -r requirements.txt
+```
+
+
+### __Nix__
+
+
+```nix
+# File : shell.nix 
+{ pkgs ? import <nixpkgs> {}, ... }:
+
+pkgs.mkShell {
+
+    buildInputs = with pkgs; [
+
+        python310
+
+        #python310Packages.pytorchWithCuda
+        python310Packages.pytorchWithoutCuda
+        python310Packages.torchvision
+        python310Packages.ignite
+
+        #python310Packages.numpy
+        #python310Packages.scipy
+        #python310Packages.scikitimage
+        #python310Packages.matplotlib
+
+        #python310Packages.ipywidgets
+        #python310Packages.ipykernel
+
+    ];
+
+}
+```
+Then
+```bash
+nix-shell shell.nix
+```
+
+
+## __Running__
+
+### __Configuration file (json)__
 
 For configure a training, you can make with a json configuration file.
 For example, the file `example.json` can contain:
@@ -32,7 +102,7 @@ For example, the file `example.json` can contain:
 }
 ```
 
-### Commands
+### __Commands__
 
 Just run :
 ```bash
