@@ -50,7 +50,7 @@ def update_history_metrics(
     
 
     # # Print logs
-    # str_print = mode + ' Results - Epoch {} - mae: {:.2f} Avg mae: {:.2f} mse: {:.2f} Avg mse: {:.2f}'
+    # str_print = mode + ' Results - Epoch {} - mae: {:.2f} Avg mae: {:.2f} mse: {:.2f} Avg mse: {:.2f}\n'
     # print(str_print.format(no_epoch, mae, avg_mae, mse, avg_mse))
 
     # Update history

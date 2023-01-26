@@ -46,8 +46,9 @@ class ImageDataset(torch.utils.data.Dataset):
                     mode=torchvision.io.ImageReadMode.GRAY
                 ) / 255.0
 
-            image_artifact_decoded = torch.nn.functional.max_pool2d(image_artifact_decoded, (2,2))
-            image_result_decoded = torch.nn.functional.max_pool2d(image_result_decoded, (2,2))
+            size_pool = (4,4)
+            image_artifact_decoded = torch.nn.functional.max_pool2d(image_artifact_decoded, size_pool)
+            image_result_decoded = torch.nn.functional.max_pool2d(image_result_decoded, size_pool)
 
             self.items.append((image_artifact_decoded.to(device=device), image_result_decoded.to(device=device)))
 

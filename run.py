@@ -22,7 +22,7 @@ if __name__ == '__main__' :
     with open(sys.argv[1]) as file:
         config: dict = json.load(file)
         
-        
+
     train_loader, validation_loader = Datas.get_dataloaders(
         config=config,
         device=config.get('device', 'cpu')
@@ -141,4 +141,10 @@ if __name__ == '__main__' :
         # metric_names=['mae', 'avg_mae', 'mse', 'avg_mse']
     )
 
+    
+
     trainer.run(train_loader, max_epochs=config.get('max_epochs', 3))
+
+    # print(training_history)
+    # print(validation_history)
+    

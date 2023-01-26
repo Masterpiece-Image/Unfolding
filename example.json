@@ -6,10 +6,10 @@
     },
     "dataset_path" : "./phantom-datas",
     "train_size" : 0.8,
-    "batch_size" : 1,
+    "batch_size" : 2,
     "output_path" : "output",
     "shuffle" : true,
-    "learning_rate" : 0.001,
-    "max_epochs" : 1,
+    "learning_rate" : 1e-6,
+    "max_epochs" : 5, 
     "device" : "cuda"
 }
