@@ -9,6 +9,10 @@ git clone https://github.com/Masterpiece-Image/Unfolding.git
 
 ### __Docker__
 
+```bash
+TODO
+```
+
 ### __Conda__
 
 
@@ -28,6 +32,10 @@ conda install pytorch torchvision cpuonly -c pytorch
 ```
 
 #### __From yaml files__
+
+```bash
+TODO
+```
 
 ### __Pip__
 
