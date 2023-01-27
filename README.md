@@ -3,7 +3,7 @@
 ## __Clonning__
 ```bash
 git clone https://github.com/Masterpiece-Image/Unfolding.git
-git@github.com:Masterpiece-Image/Unfolding.git
+git clone git@github.com:Masterpiece-Image/Unfolding.git
 ```
 
 ## __Environments__
