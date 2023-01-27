@@ -6,6 +6,8 @@ import matplotlib
 
 sys.path.append('./src')
 
+import torch
+import torch.utils.data
 
 import ignite.engine
 import ignite.contrib.handlers
@@ -20,6 +22,8 @@ import numpy
 import src.Trainer as Trainer
 import src.Evaluator as Evaluator
 import src.Datas as Datas
+import src.Unfolding as Unfolding
+
 
 
 
@@ -191,9 +195,26 @@ if __name__ == '__main__' :
     matplotlib.pyplot.clf()
 
     
-    # matplotlib.pyplot.show()
+    # dataset = Datas.ImageDataset(
+    #     pathlib.Path(config['dataset_path'])
+    # )
+    # dataloader = torch.utils.data.DataLoader(dataset)
+    # model = Unfolding.Unfolding(
+    #     in_channels=config['model'].get('input_channels', 1),
+    #     num_features=config['model'].get('num_features', 48),
+    #     iterations=config['model'].get('iterations', 10)
+    # )
+    # model.load_state_dict(torch.load(str(output_path / 'model.pt')))
 
-    
+    # # matplotlib.pyplot.show()
+    # model.eval()
+    # for no, (artifact, _) in enumerate(dataloader):
+    #     print(artifact.shape)
+    #     prediction: torch.Tensor = model(artifact)
+    #     matplotlib.pyplot.imsave(
+    #         output_path / ('train_image_'+str(no)+'.png'),
+    #         prediction.detach().numpy()
+    #     )
     
     # print(training_history)
     # print(validation_history)

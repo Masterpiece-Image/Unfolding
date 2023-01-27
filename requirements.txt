@@ -6,8 +6,12 @@ torchvision
 ## https://pytorch.org/ignite/
 ignite
 
-# Typing : https://docs.python.org/3/library/typing.html
+# https://docs.python.org/3/library/typing.html
 typing
+
+pandas
+matplotlib
+tqdm
 
 # Dependencies for Jupyter
 # ipykernel

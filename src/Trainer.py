@@ -95,4 +95,4 @@ def save_model(
     model: torch.nn.Module, 
     path: pathlib.Path = pathlib.Path('.')
 ) -> None:
-    torch.save(model, path / 'model.pt')
+    torch.save(model.state_dict(), path / 'model.pt')
