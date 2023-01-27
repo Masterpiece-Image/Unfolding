@@ -22,8 +22,13 @@ Installation of dependencies :
 
 Before, you must [know your cuda version installed](https://arnon.dk/check-cuda-installed/) (use `nvcc --version`)
 ```bash
-conda install pytorch torchvision ignite pytorch-cuda="your cuda version" -c pytorch -c nvidia
+conda create --name unfolding python=3.10
+conda activate unfolding
+conda install pytorch torchvision ignite pytorch-cuda="your cuda version or latest" -c pytorch -c nvidia
+conda install pandas matplotlib tqdm pytorch torchvision ignite pytorch-cuda=11.7 -c pytorch -c nvidia
 ```
+
+
 
 #### __With CPU__
 
@@ -114,5 +119,5 @@ For example, the file `example.json` can contain:
 
 Just run :
 ```bash
-python3 run.py example.json
+python3 run.py ./examples/train3/config.json
 ```
