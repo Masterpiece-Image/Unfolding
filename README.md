@@ -25,8 +25,7 @@ Before, you must [know your cuda version installed](https://arnon.dk/check-cuda-
 ```bash
 conda create --name unfolding python=3.10
 conda activate unfolding
-conda install pytorch torchvision ignite pytorch-cuda="your cuda version or latest" -c pytorch -c nvidia
-conda install pandas matplotlib tqdm pytorch torchvision ignite pytorch-cuda=11.7 -c pytorch -c nvidia
+conda install pandas matplotlib tqdm pytorch torchvision ignite pytorch-cuda="your cuda version or latest" -c pytorch -c nvidia
 ```
 
 

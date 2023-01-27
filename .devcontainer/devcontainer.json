@@ -9,18 +9,18 @@
 	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
 	"dockerFile": "../Dockerfile",
 
-	"customizations": {
+	// "customizations": {
 		
-		"vscode": {
+	// 	"vscode": {
 	
-			"extensions": [
-				"ms-python.python",
-				"ms-toolsai.jupyter"
-			]
+	// 		"extensions": [
+	// 			"ms-python.python",
+	// 			"ms-toolsai.jupyter"
+	// 		]
 
-		}
+	// 	}
 		
-	},
+	// },
 
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
