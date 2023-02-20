@@ -171,28 +171,28 @@ if __name__ == '__main__' :
     # print(df_history_train)
     # df_history_train.plot()
     
-    matplotlib.pyplot.clf()
+    # matplotlib.pyplot.clf()
 
-    df_history_train.plot(xlabel='Epoch', ylabel='Metrics')
-    matplotlib.pyplot.title('Train History')
-    matplotlib.pyplot.savefig(output_path / 'train_history')
+    # df_history_train.plot(xlabel='Epoch', ylabel='Metrics')
+    # matplotlib.pyplot.title('Train History')
+    # matplotlib.pyplot.savefig(output_path / 'train_history')
 
-    matplotlib.pyplot.clf()
+    # matplotlib.pyplot.clf()
 
-    df_history_valid.plot(xlabel='Epoch', ylabel='Metrics')
-    matplotlib.pyplot.title('Validation History')
-    matplotlib.pyplot.savefig(output_path / 'validation_history')
+    # df_history_valid.plot(xlabel='Epoch', ylabel='Metrics')
+    # matplotlib.pyplot.title('Validation History')
+    # matplotlib.pyplot.savefig(output_path / 'validation_history')
 
-    matplotlib.pyplot.clf()
+    # matplotlib.pyplot.clf()
 
-    matplotlib.pyplot.plot(loss_history)
-    matplotlib.pyplot.xlabel('Epoch')
-    matplotlib.pyplot.ylabel('Loss')
-    matplotlib.pyplot.title('Loss History')
-    # matplotlib.pyplot.legend()
-    matplotlib.pyplot.savefig(output_path / 'loss_history')
+    # matplotlib.pyplot.plot(loss_history)
+    # matplotlib.pyplot.xlabel('Epoch')
+    # matplotlib.pyplot.ylabel('Loss')
+    # matplotlib.pyplot.title('Loss History')
+    # # matplotlib.pyplot.legend()
+    # matplotlib.pyplot.savefig(output_path / 'loss_history')
 
-    matplotlib.pyplot.clf()
+    # matplotlib.pyplot.clf()
 
     
     # dataset = Datas.ImageDataset(

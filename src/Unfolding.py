@@ -164,6 +164,8 @@ class Unfolding(torch.nn.Module):
             tmp = torch.concat([Z, self.stepO*O_current+(1.0-self.stepO)*O_previous], 1)
             O_current, Z = self.prox_O(tmp)
 
+            print(O_current.shape)
+
         final_out = O_current
-        self.to
+       
         return final_out

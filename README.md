@@ -1,5 +1,21 @@
 # Unfolding
 
+Number of parameters : Get 
+
+Number of convolution:
+
+
+
+Vérifier les shapes de l'image à chaque itération pour savoir qd ça diminue.
+
+Entrainement avec plus d'image 400 images.
+
+
+
+## 
+
+
+
 ## __Clonning__
 ```bash
 git clone https://github.com/Masterpiece-Image/Unfolding.git
