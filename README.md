@@ -35,6 +35,8 @@ Vérifier les shapes de l'image à chaque itération pour savoir qd ça diminue.
 
 Entrainement avec plus d'image 400 images. -->
 
+Variant of [A Model-Driven Deep Unfolding Method for JPEG Artifacts Removal](https://xueyangfu.github.io/).
+
 ## __Clonning__
 ```bash
 git clone https://github.com/Masterpiece-Image/Unfolding.git
