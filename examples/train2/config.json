@@ -11,6 +11,6 @@
     "shuffle" : true,
     "learning_rate" : 1e-6,
     "max_epochs" : 100, 
-    "device" : "cuda",
+    "device" : "gpu",
     "max_pool2d" : [4, 4]
 }
