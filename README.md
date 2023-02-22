@@ -1,8 +1,33 @@
 # Unfolding
 
+Ce qu'on a fait :
+- résolution du problème dimension  => squeeze car (1, 1, 200, 200)
+- Loss custom
+- Dataset 400
+
+Introduction des artefacts :
+- Par quantifaction (déjà fait)
+- Seuillage des valeurs singulière (SVD)
+- Image simplifier d'imagerie mais qui se ressemble => pas que des phantom logan
+
+---
+
+Est ce qu'il existe plusieurs types d'artefacts ?
+Si oui, pourriez vous nous donner quelques types d'artefacts afin que nous
+puissions les rajouter sur les images ?
+
+Est ce que vous pourriez nous avoir des images médicales ?
+---
+
 Number of parameters : Get 
 
 Number of convolution:
+
+Ce que je vais :
+import => setup.py
+dataset 
+
+
 
 
 
@@ -49,7 +74,7 @@ conda install pandas matplotlib tqdm pytorch torchvision ignite pytorch-cuda="yo
 #### __With CPU__
 
 ```bash
-conda install pytorch torchvision cpuonly -c pytorch
+conda install pandas matplotlib tqdm torchvision ignite pytorch torchvision cpuonly -c pytorch
 ```
 
 #### __From yaml files__
@@ -61,7 +86,7 @@ TODO
 ### __Pip__
 
 ```bash
-pip3 install torch torchvision ignite
+pip3 install torch torchvision ignite pandas matplotlib tqdm
 ```
 
 #### __From requirements file__
