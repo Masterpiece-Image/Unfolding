@@ -1,6 +1,6 @@
 # Unfolding
 
-Ce qu'on a fait :
+<!-- Ce qu'on a fait :
 - résolution du problème dimension  => squeeze car (1, 1, 200, 200)
 - Loss custom
 - Dataset 400
@@ -33,13 +33,7 @@ dataset
 
 Vérifier les shapes de l'image à chaque itération pour savoir qd ça diminue.
 
-Entrainement avec plus d'image 400 images.
-
-
-
-## 
-
-
+Entrainement avec plus d'image 400 images. -->
 
 ## __Clonning__
 ```bash
@@ -93,6 +87,11 @@ pip3 install torch torchvision ignite pandas matplotlib tqdm
 
 ```bash
 pip3 install -r requirements.txt
+```
+
+#### __Install like a python package__
+```bash
+pip3 install -U git+https://github.com/Masterpiece-Image/Unfolding.git 
 ```
 
 
