@@ -28,8 +28,8 @@ def initialize(config: dict[str, str|int|dict]):
         lr = config.get('learning_rate', 0.001)
     )
 
-    # MAE
-    criterion = torch.nn.L1Loss()
+    # Custom loss
+    criterion = lossCustom
 
     # # https://pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.StepLR.html
     # le = config["num_iters_per_epoch"]
@@ -56,7 +56,10 @@ def create_train_step(
 
         model.train()
         predictions = model(artifacts)
-        loss: torch.Tensor = criterion(predictions, results)
+        if getattr(criterion, '__name__', repr(callable)) == "lossCustom":
+            loss: torch.Tensor = criterion(model.all_O, model.all_H, results, artifacts)
+        else:
+            loss: torch.Tensor = criterion(predictions, results)
 
         optimizer.zero_grad()
         loss.backward()
@@ -74,6 +77,34 @@ def create_train_step(
         return output
 
     return train_step
+
+def lossCustom(O, H, target, J):
+    #alpha = beta = torch.tensor([1 if (i==0) else 0.1 for i in range(O.shape[0])])
+
+    resemblance_loss = torch.abs(O - target.unsqueeze(0)).expand((O.shape[0],-1,-1,-1,-1))
+    consistance_loss = torch.abs(H - (J - target).unsqueeze(0)).expand((H.shape[0],-1,-1,-1,-1))
+
+    resemblance_loss = torch.mean(resemblance_loss, dim=(1,2,3,4))
+    consistance_loss = torch.mean(consistance_loss, dim=(1,2,3,4))
+
+    #alpha.to(device)
+    #beta.to(device)
+    #resemblance_loss.to(device)
+    #consistance_loss.to(device)
+
+    #print("\ndevice alpha:", alpha.get_device(), ", ", torch.cuda.device(alpha.get_device()))
+    #print("device beta:", beta.get_device(), ", ", torch.cuda.device(beta.get_device()))
+    #print("device resemblance_loss:", resemblance_loss.get_device(), ", ", torch.cuda.device(resemblance_loss.get_device()))
+    #print("device consistance_loss:", consistance_loss.get_device(), ", ", torch.cuda.device(consistance_loss.get_device()))
+
+    resemblance_loss = resemblance_loss * 0.1
+    consistance_loss = consistance_loss * 0.
+    resemblance_loss[0] *= 10
+    consistance_loss[0] *= 10
+
+    loss = torch.mean(resemblance_loss + consistance_loss)
+
+    return loss 
 
 
 def update_loss_history(engine: ignite.engine.Engine, loss_history: list):
