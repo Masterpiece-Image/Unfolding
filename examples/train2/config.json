@@ -4,7 +4,7 @@
         "iterations" : 10,
         "num_features" : 48
     },
-    "dataset_path" : "./examples/train2/phantom-datas",
+    "dataset_path" : "./examples/shepp_logan_phantom",
     "train_size" : 0.8,
     "batch_size" : 2,
     "output_path" : "./examples/train2/outputs",

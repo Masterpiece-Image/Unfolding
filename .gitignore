@@ -4,3 +4,6 @@ paper.pdf
 code.zip
 code
 default.nix
+examples/shepp_logan_phantom/
+examples/shepp_logan_phantom_test/
+**/outputs

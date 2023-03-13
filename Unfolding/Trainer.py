@@ -129,4 +129,5 @@ def save_model(
     model: torch.nn.Module, 
     path: pathlib.Path = pathlib.Path('.')
 ) -> None:
-    torch.save(model.state_dict(), path / 'model.pt')
+    no_epoch = engine.state.epoch
+    torch.save(model.state_dict(), path / 'model_epoch{}.pt'.format(no_epoch))

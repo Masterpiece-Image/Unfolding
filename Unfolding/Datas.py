@@ -14,32 +14,44 @@ class ImageDataset(torch.utils.data.Dataset):
             root_dir (pathlib.Path): Directory with all the images.
         """
         super(ImageDataset, self).__init__()
+        
         self.data_path: pathlib.Path = data_path
-        self.image_names: list[pathlib.Path] = [ 
-            filename.stem for filename in map(lambda e : pathlib.Path(e), os.listdir(self.data_path / 'Artifacts'))
-        ]
+
+        self.data_artifacts = self.data_path / 'Artifacts'
+        self.data_results = self.data_path / 'Results'
+
+        # artifacts_files = list(self.data_artifacts.glob('*'))
+        # artifacts_files = list(self.data_artifacts.glob('*'))
+
+
+        # self.image_names: list[pathlib.Path] = [ 
+        #     filename.stem for filename in map(lambda e : pathlib.Path(e), os.listdir(self.data_path / 'Artifacts'))
+        # ]
+
+        self.filenames: list[str] = list(map(lambda file: file.name, list(self.data_artifacts.glob('**/*'))))
+        # print(self.filenames)
 
         self.items: list[tuple[torch.Tensor, torch.Tensor]] = [] 
 
         device = config.get('device', 'cpu')
         size_pool = config.get('max_pool2d', (2, 2))
 
-        for index in range(0, len(self.image_names)):
+        for index in range(0, len(self.filenames)):
 
             filename_artifact: pathlib.Path = \
-                self.data_path / 'Artifacts' / (self.image_names[index] + '.jpg')
+                self.data_path / 'Artifacts' / self.filenames[index]
 
             image_artifact_string: torch.Tensor = \
                 torchvision.io.read_file(str(filename_artifact))
-
+          
             image_artifact_decoded: torch.Tensor = \
-                torchvision.io.decode_jpeg(
+                torchvision.io.decode_png(
                     input=image_artifact_string, 
                     mode=torchvision.io.ImageReadMode.GRAY
                 ) / 255.0
 
             filename_result: pathlib.Path = \
-                self.data_path / 'Results' / (self.image_names[index] + '.png')
+                self.data_path / 'Results' / self.filenames[index]
 
             image_result_string: torch.Tensor = \
                 torchvision.io.read_file(str(filename_result))

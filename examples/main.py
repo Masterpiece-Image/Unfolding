@@ -62,7 +62,8 @@ if __name__ == '__main__' :
     
 
     trainer.add_event_handler(
-        ignite.engine.Events.COMPLETED,
+        # ignite.engine.Events.COMPLETED,
+        ignite.engine.Events.EPOCH_COMPLETED(every=20),
         # Callback
         Trainer.save_model,
         # Parameters of callback
@@ -168,6 +169,9 @@ if __name__ == '__main__' :
     df_history_train = pandas.DataFrame(data=training_history)
     df_history_valid = pandas.DataFrame(data=validation_history)
 
+    df_history_train.to_pickle(output_path / 'train_history.pkl')
+    df_history_valid.to_pickle(output_path / 'valid_history.pkl')
+
     # print(df_history_train)
     # df_history_train.plot()
     
@@ -176,7 +180,6 @@ if __name__ == '__main__' :
     df_history_train.plot(xlabel='Epoch', ylabel='Metrics')
     matplotlib.pyplot.title('Train History')
     matplotlib.pyplot.savefig(output_path / 'train_history')
-
     matplotlib.pyplot.clf()
 
     df_history_valid.plot(xlabel='Epoch', ylabel='Metrics')
@@ -194,7 +197,6 @@ if __name__ == '__main__' :
 
     matplotlib.pyplot.clf()
 
-    
     # dataset = Datas.ImageDataset(
     #     pathlib.Path(config['dataset_path'])
     # )

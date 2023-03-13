@@ -22,8 +22,11 @@ class Unfolding(torch.nn.Module):
         self.num_features = num_features
         self.iterations = iterations
 
-        torch.Tensor : self.all_O
-        torch.Tensor : self.all_H
+        self.all_O: torch.Tensor
+        self.all_H: torch.Tensor
+
+        # torch.Tensor : self.all_O
+        # torch.Tensor : self.all_H
 
         # Initial
         self.O_0 = torch.nn.Conv2d(
@@ -106,8 +109,11 @@ class Unfolding(torch.nn.Module):
         return layer(input)
 
     def forward(self, image: torch.Tensor) -> torch.Tensor:
-        torch.Tensor : all_O
-        torch.Tensor : all_H
+        # torch.Tensor : all_O
+        # torch.Tensor : all_H
+
+        all_O: torch.Tensor
+        all_H: torch.Tensor
 
         # Initial
         out_O_0 = self.O_0(image)
